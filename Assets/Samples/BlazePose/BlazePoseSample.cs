@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using TensorFlowLite;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 /// <summary>
 /// BlazePose form MediaPipe
@@ -183,8 +184,11 @@ public sealed class BlazePoseSample : MonoBehaviour
         var square_x = (worldJoints[23].x + worldJoints[12].x )/ 2;
         var square_y = (worldJoints[23].y + worldJoints[12].y )/ 2;
         var square_z = (worldJoints[23].z + worldJoints[12].z) / 2;
+        var squareScale_x = Math.Abs(worldJoints[11].x - worldJoints[12].x);
+        var squareScale_y = Math.Abs(worldJoints[11].y - worldJoints[23].y);
         Debug.Log(new Vector3(square_x, square_y, square_z));
         cube.transform.position = new Vector3(square_x, square_y, square_z);
+        cube.transform.localScale = new Vector3((float)squareScale_x, (float)squareScale_y, 0.5f);
         // var connections = PoseLandmarkDetect.Connections;
         // for (int i = 0; i < connections.Length; i += 2)
         // {
