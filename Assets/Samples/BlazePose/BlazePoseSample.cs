@@ -196,38 +196,24 @@ public sealed class BlazePoseSample : MonoBehaviour
         var square_x = (worldJoints[23].x + worldJoints[12].x )/ 2;
         var square_y = (worldJoints[23].y + worldJoints[12].y )/ 2;
         var square_z = (worldJoints[23].z + worldJoints[12].z) / 2;
+        
         var squareScale_x = Vector3.Distance (worldJoints[11], worldJoints[12]);
         var squareScale_y = Vector3.Distance(worldJoints[11], worldJoints[23]);
+        
         cube.transform.position = new Vector3(square_x, square_y, square_z);
         cube.transform.localScale = new Vector3((float)squareScale_x,(float)squareScale_y, 0.5f);
-        // var dot = Vector3.Dot(worldJoints[11],worldJoints[12]);
-        // dot = dot/(worldJoints[11].magnitude*worldJoints[12].magnitude);
-        // var acos = Mathf.Acos(dot);
-        // var angle = acos*180/Mathf.PI;
-        var z_rot = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x)) * -180;
-        Debug.Log(z_rot + " degrees");
-        // cube.transform.rotation= new Quaternion(0, (float)z_rot, 0,0);
-        // cube.transform.Rotate(0f, (float)z_rot, 0.0f, Space.Self);
-        // var connections = PoseLandmarkDetect.Connections;
-        // for (int i = 0; i < connections.Length; i += 2)
-        // {
-        //     var a = worldJoints[connections[i]];
-        //     var b = worldJoints[connections[i + 1]];
-        //     if (a.w > visibilityThreshold || b.w > visibilityThreshold)
-        //     {
-        //         draw.Line3D(a, b, 0.05f);
-        //     }
-        // }
-        
+       
+        var yRotationAxisAngle = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x)) * -180/3.14;
         // Cube rotation update
-        anglesToRotate = new Vector3(0f, (float) z_rot, 0f);
+        anglesToRotate = new Vector3(0f, (float) yRotationAxisAngle, 0f);
         Quaternion rotationY = Quaternion.AngleAxis(anglesToRotate.y, new Vector3(0f, 1f, 0f));
         Quaternion rotationX = Quaternion.AngleAxis(anglesToRotate.x, new Vector3(1f, 0f, 0f));
         Quaternion rotationZ = Quaternion.AngleAxis(anglesToRotate.z, new Vector3(0f, 0f, 1f));
-        // cube.transform.rotation = rotationY * rotationX * rotationZ * cube.transform.rotation;
         cube.transform.rotation = rotationY * rotationX * rotationZ;
         currentRotation = currentRotation + anglesToRotate;
         currentRotation = new Vector3(currentRotation.x % 360, currentRotation.y % 360, currentRotation.z % 360);
+        
+        Debug.Log(yRotationAxisAngle + " z_rot degrees");
         
         draw.Apply();
     }

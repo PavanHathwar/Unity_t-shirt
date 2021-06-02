@@ -173,7 +173,7 @@ Camera:
   near clip plane: 0.01
   far clip plane: 100
   field of view: 50
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -544,6 +544,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6c2ecddc84d4bfb931c1f8ad12eac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRotation: {x: 0, y: 0, z: 0}
+  anglesToRotate: {x: 0, y: 0, z: 0}
   poseDetectionModelFile: mediapipe/pose_detection.tflite
   poseLandmarkModelFile: mediapipe/pose_landmark_lite.tflite
   cameraView: {fileID: 2074584278}
