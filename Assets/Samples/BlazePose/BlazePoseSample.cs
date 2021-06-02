@@ -66,11 +66,11 @@ public sealed class BlazePoseSample : MonoBehaviour
         cancellationToken = this.GetCancellationTokenOnDestroy();
         
         // Cube initial rotation setup
-        currentRotation = new Vector3(0f, 0f, 0f);
-        Quaternion rotationY = Quaternion.AngleAxis(currentRotation.y, new Vector3(0f, 1f, 0f));
-        Quaternion rotationX = Quaternion.AngleAxis(currentRotation.x, new Vector3(1f, 0f, 0f));
-        Quaternion rotationZ = Quaternion.AngleAxis(currentRotation.z, new Vector3(0f, 0f, 1f));
-        cube.transform.rotation = rotationY * rotationX * rotationZ;
+        // currentRotation = new Vector3(0f, 0f, 0f);
+        // Quaternion rotationY = Quaternion.AngleAxis(currentRotation.y, new Vector3(0f, 1f, 0f));
+        // Quaternion rotationX = Quaternion.AngleAxis(currentRotation.x, new Vector3(1f, 0f, 0f));
+        // Quaternion rotationZ = Quaternion.AngleAxis(currentRotation.z, new Vector3(0f, 0f, 1f));
+        // cube.transform.rotation = rotationY * rotationX * rotationZ;
     }
 
     void OnDestroy()
@@ -142,17 +142,11 @@ public sealed class BlazePoseSample : MonoBehaviour
 
     void DrawJoints(Vector4[] joints)
     {
-        // draw.color = Color.blue;
         draw.color = Color.green;
-
-        // Vector3 min = rtCorners[0];
-        // Vector3 max = rtCorners[2];
-        // Debug.Log($"rtCorners min: {min}, max: {max}");
-
+        
         // Apply webcam rotation to draw landmarks correctly
         Matrix4x4 mtx = WebCamUtil.GetMatrix(-webcamTexture.videoRotationAngle, false, webcamTexture.videoVerticallyMirrored);
-
-        // float zScale = (max.x - min.x) / 2;
+        
         float zScale = 1;
         float zOffset = canvas.planeDistance;
         float aspect = (float)Screen.width / (float)Screen.height;
@@ -204,15 +198,16 @@ public sealed class BlazePoseSample : MonoBehaviour
         cube.transform.localScale = new Vector3((float)squareScale_x,(float)squareScale_y, 0.5f);
        
         var yRotationAxisAngle = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x)) * -180/3.14;
+        // var xRotationAxisAngle =(Math.Atan((worldJoints[11].y - worldJoints[23].y) / (worldJoints[11].z - worldJoints[23].z)) * -180/3.14)-90;
+        var zRotationAxisAngle =Math.Atan((worldJoints[12].y - worldJoints[11].y) / (worldJoints[12].x - worldJoints[11].x)) * 180/3.14;
         // Cube rotation update
-        anglesToRotate = new Vector3(0f, (float) yRotationAxisAngle, 0f);
+        anglesToRotate = new Vector3(0f, (float) yRotationAxisAngle,(float) zRotationAxisAngle);
         Quaternion rotationY = Quaternion.AngleAxis(anglesToRotate.y, new Vector3(0f, 1f, 0f));
         Quaternion rotationX = Quaternion.AngleAxis(anglesToRotate.x, new Vector3(1f, 0f, 0f));
         Quaternion rotationZ = Quaternion.AngleAxis(anglesToRotate.z, new Vector3(0f, 0f, 1f));
         cube.transform.rotation = rotationY * rotationX * rotationZ;
-        currentRotation = currentRotation + anglesToRotate;
-        currentRotation = new Vector3(currentRotation.x % 360, currentRotation.y % 360, currentRotation.z % 360);
-        
+        // currentRotation = currentRotation + anglesToRotate;
+        // currentRotation = new Vector3(currentRotation.x % 360, currentRotation.y % 360, currentRotation.z % 360);
         Debug.Log(yRotationAxisAngle + " z_rot degrees");
         
         draw.Apply();
