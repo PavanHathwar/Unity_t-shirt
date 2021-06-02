@@ -12,6 +12,10 @@ using System;
 /// </summary>
 public sealed class BlazePoseSample : MonoBehaviour
 {
+    
+    // Cube rotation vars
+    public Vector3 currentRotation;
+    public Vector3 anglesToRotate;
 
     [SerializeField, FilePopup("*.tflite")] string poseDetectionModelFile = "coco_ssd_mobilenet_quant.tflite";
     [SerializeField, FilePopup("*.tflite")] string poseLandmarkModelFile = "coco_ssd_mobilenet_quant.tflite";
@@ -60,6 +64,13 @@ public sealed class BlazePoseSample : MonoBehaviour
         worldJoints = new Vector4[PoseLandmarkDetect.JointCount];
 
         cancellationToken = this.GetCancellationTokenOnDestroy();
+        
+        // Cube initial rotation setup
+        currentRotation = new Vector3(0f, 0f, 0f);
+        Quaternion rotationY = Quaternion.AngleAxis(currentRotation.y, new Vector3(0f, 1f, 0f));
+        Quaternion rotationX = Quaternion.AngleAxis(currentRotation.x, new Vector3(1f, 0f, 0f));
+        Quaternion rotationZ = Quaternion.AngleAxis(currentRotation.z, new Vector3(0f, 0f, 1f));
+        cube.transform.rotation = rotationY * rotationX * rotationZ;
     }
 
     void OnDestroy()
@@ -187,17 +198,16 @@ public sealed class BlazePoseSample : MonoBehaviour
         var square_z = (worldJoints[23].z + worldJoints[12].z) / 2;
         var squareScale_x = Vector3.Distance (worldJoints[11], worldJoints[12]);
         var squareScale_y = Vector3.Distance(worldJoints[11], worldJoints[23]);
-        // Debug.Log(worldJoints[11]+"  "+worldJoints[12]);
         cube.transform.position = new Vector3(square_x, square_y, square_z);
         cube.transform.localScale = new Vector3((float)squareScale_x,(float)squareScale_y, 0.5f);
         // var dot = Vector3.Dot(worldJoints[11],worldJoints[12]);
         // dot = dot/(worldJoints[11].magnitude*worldJoints[12].magnitude);
         // var acos = Mathf.Acos(dot);
         // var angle = acos*180/Mathf.PI;
-        var z_rot = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x))*180;
+        var z_rot = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x)) * -180;
         Debug.Log(z_rot + " degrees");
-        cube.transform.rotation= new Quaternion((float)z_rot, 0, 0,0);
-        
+        // cube.transform.rotation= new Quaternion(0, (float)z_rot, 0,0);
+        // cube.transform.Rotate(0f, (float)z_rot, 0.0f, Space.Self);
         // var connections = PoseLandmarkDetect.Connections;
         // for (int i = 0; i < connections.Length; i += 2)
         // {
@@ -208,6 +218,17 @@ public sealed class BlazePoseSample : MonoBehaviour
         //         draw.Line3D(a, b, 0.05f);
         //     }
         // }
+        
+        // Cube rotation update
+        anglesToRotate = new Vector3(0f, (float) z_rot, 0f);
+        Quaternion rotationY = Quaternion.AngleAxis(anglesToRotate.y, new Vector3(0f, 1f, 0f));
+        Quaternion rotationX = Quaternion.AngleAxis(anglesToRotate.x, new Vector3(1f, 0f, 0f));
+        Quaternion rotationZ = Quaternion.AngleAxis(anglesToRotate.z, new Vector3(0f, 0f, 1f));
+        // cube.transform.rotation = rotationY * rotationX * rotationZ * cube.transform.rotation;
+        cube.transform.rotation = rotationY * rotationX * rotationZ;
+        currentRotation = currentRotation + anglesToRotate;
+        currentRotation = new Vector3(currentRotation.x % 360, currentRotation.y % 360, currentRotation.z % 360);
+        
         draw.Apply();
     }
 
