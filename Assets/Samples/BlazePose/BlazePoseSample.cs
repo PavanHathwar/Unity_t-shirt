@@ -131,7 +131,8 @@ public sealed class BlazePoseSample : MonoBehaviour
 
     void DrawJoints(Vector4[] joints)
     {
-        draw.color = Color.blue;
+        // draw.color = Color.blue;
+        draw.color = Color.green;
 
         // Vector3 min = rtCorners[0];
         // Vector3 max = rtCorners[2];
@@ -184,11 +185,19 @@ public sealed class BlazePoseSample : MonoBehaviour
         var square_x = (worldJoints[23].x + worldJoints[12].x )/ 2;
         var square_y = (worldJoints[23].y + worldJoints[12].y )/ 2;
         var square_z = (worldJoints[23].z + worldJoints[12].z) / 2;
-        var squareScale_x = Math.Abs(worldJoints[11].x - worldJoints[12].x);
-        var squareScale_y = Math.Abs(worldJoints[11].y - worldJoints[23].y);
-        Debug.Log(new Vector3(square_x, square_y, square_z));
+        var squareScale_x = Vector3.Distance (worldJoints[11], worldJoints[12]);
+        var squareScale_y = Vector3.Distance(worldJoints[11], worldJoints[23]);
+        // Debug.Log(worldJoints[11]+"  "+worldJoints[12]);
         cube.transform.position = new Vector3(square_x, square_y, square_z);
-        cube.transform.localScale = new Vector3((float)squareScale_x, (float)squareScale_y, 0.5f);
+        cube.transform.localScale = new Vector3((float)squareScale_x,(float)squareScale_y, 0.5f);
+        // var dot = Vector3.Dot(worldJoints[11],worldJoints[12]);
+        // dot = dot/(worldJoints[11].magnitude*worldJoints[12].magnitude);
+        // var acos = Mathf.Acos(dot);
+        // var angle = acos*180/Mathf.PI;
+        var z_rot = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x))*180;
+        Debug.Log(z_rot + " degrees");
+        cube.transform.rotation= new Quaternion((float)z_rot, 0, 0,0);
+        
         // var connections = PoseLandmarkDetect.Connections;
         // for (int i = 0; i < connections.Length; i += 2)
         // {
