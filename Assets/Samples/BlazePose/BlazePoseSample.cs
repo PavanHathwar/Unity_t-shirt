@@ -198,10 +198,10 @@ public sealed class BlazePoseSample : MonoBehaviour
         cube.transform.localScale = new Vector3((float)squareScale_x,(float)squareScale_y, 0.5f);
        
         var yRotationAxisAngle = Math.Atan((worldJoints[12].z - worldJoints[11].z) / (worldJoints[12].x - worldJoints[11].x)) * -180/3.14;
-        // var xRotationAxisAngle =(Math.Atan((worldJoints[11].y - worldJoints[23].y) / (worldJoints[11].z - worldJoints[23].z)) * -180/3.14)-90;
+        var xRotationAxisAngle =(Math.Atan((worldJoints[11].z - worldJoints[23].z) / (worldJoints[11].y - worldJoints[23].y)) * 180/3.14);
         var zRotationAxisAngle =Math.Atan((worldJoints[12].y - worldJoints[11].y) / (worldJoints[12].x - worldJoints[11].x)) * 180/3.14;
         // Cube rotation update
-        anglesToRotate = new Vector3(0f, (float) yRotationAxisAngle,(float) zRotationAxisAngle);
+        anglesToRotate = new Vector3((float) xRotationAxisAngle, (float) yRotationAxisAngle,(float) zRotationAxisAngle);
         Quaternion rotationY = Quaternion.AngleAxis(anglesToRotate.y, new Vector3(0f, 1f, 0f));
         Quaternion rotationX = Quaternion.AngleAxis(anglesToRotate.x, new Vector3(1f, 0f, 0f));
         Quaternion rotationZ = Quaternion.AngleAxis(anglesToRotate.z, new Vector3(0f, 0f, 1f));
